@@ -240,3 +240,42 @@ def describe_squirrel_server_api():
             response = http_client.getresponse()
             assert response.status == 501
             assert "Unsupported method" in response.read().decode('utf-8')
+    
+
+    def describe_bad_request_400():
+        def it_returns_400_when_creating_with_missing_size(http_client, request_headers, db):
+            bad_body = urllib.parse.urlencode({'name': 'Fluffy'})  # missing size
+            http_client.request("POST", "/squirrels", body=bad_body, headers=request_headers)
+            response = http_client.getresponse()
+            assert response.status == 400
+            assert response.getheader('Content-Type') == "text/plain"
+            body = response.read().decode('utf-8')
+            assert "Bad Request" in body
+            # Database unchanged
+            assert len(db.getSquirrels()) == 0
+
+        def it_returns_400_when_creating_with_missing_name(http_client, request_headers, db):
+            bad_body = urllib.parse.urlencode({'size': 'large'})  # missing name
+            http_client.request("POST", "/squirrels", body=bad_body, headers=request_headers)
+            response = http_client.getresponse()
+            assert response.status == 400
+            assert "Bad Request" in response.read().decode('utf-8')
+            assert len(db.getSquirrels()) == 0
+
+        def it_returns_400_when_updating_with_missing_size(http_client, request_headers, make_a_squirrel, db):
+            bad_body = urllib.parse.urlencode({'name': 'Nutty'})  # missing size
+            http_client.request("PUT", "/squirrels/1", body=bad_body, headers=request_headers)
+            response = http_client.getresponse()
+            assert response.status == 400
+            assert "Bad Request" in response.read().decode('utf-8')
+            # Verify original data unchanged
+            squirrel = db.getSquirrel("1")
+            assert squirrel["name"] == "Fred"
+
+        def it_returns_400_when_updating_with_missing_name(http_client, request_headers, make_a_squirrel, db):
+            bad_body = urllib.parse.urlencode({'size': 'medium'})  # missing name
+            http_client.request("PUT", "/squirrels/1", body=bad_body, headers=request_headers)
+            response = http_client.getresponse()
+            assert response.status == 400
+            squirrel = db.getSquirrel("1")
+            assert squirrel["name"] == "Fred"  # unchanged
