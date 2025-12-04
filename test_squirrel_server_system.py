@@ -8,6 +8,7 @@ import time
 import urllib.parse
 import sqlite3
 from squirrel_db import SquirrelDB
+import squirrel_server
 
 
 @pytest.fixture(autouse=True)
