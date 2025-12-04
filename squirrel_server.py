@@ -91,6 +91,16 @@ class SquirrelServerHandler(BaseHTTPRequestHandler):
     def handleSquirrelsCreate(self):
         db = SquirrelDB()
         body = self.getRequestData()
+
+        # ---- NEW: validate required fields ----
+        if "name" not in body or "size" not in body:
+            self.send_response(400)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(bytes("Bad Request", "utf-8"))
+            return
+        # ----------------------------------------
+
         db.createSquirrel(body["name"], body["size"])
         self.send_response(201)
         self.end_headers()
@@ -98,13 +108,24 @@ class SquirrelServerHandler(BaseHTTPRequestHandler):
     def handleSquirrelsUpdate(self, squirrelId):
         db = SquirrelDB()
         squirrel = db.getSquirrel(squirrelId)
-        if squirrel:
-            body = self.getRequestData()
-            db.updateSquirrel(squirrelId, body["name"], body["size"])
-            self.send_response(204)
-            self.end_headers()
-        else:
+        if not squirrel:
             self.handle404()
+            return
+
+        body = self.getRequestData()
+
+        # ---- NEW: validate required fields ----
+        if "name" not in body or "size" not in body:
+            self.send_response(400)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(bytes("Bad Request", "utf-8"))
+            return
+        # ----------------------------------------
+
+        db.updateSquirrel(squirrelId, body["name"], body["size"])
+        self.send_response(204)
+        self.end_headers()
 
     def handleSquirrelsDelete(self, squirrelId):
         db = SquirrelDB()

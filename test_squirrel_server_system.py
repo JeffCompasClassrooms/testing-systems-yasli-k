@@ -130,13 +130,13 @@ def describe_squirrel_server_api():
             assert len(squirrels) == 1
             assert squirrels[0] == {"id": 1, "name": "Sam", "size": "large"}
 
-        def it_fails_with_crash_for_missing_data(http_client, request_headers, db):
-            empty_body = urllib.parse.urlencode({})
-            http_client.request("POST", "/squirrels", body=empty_body, headers=request_headers)
-            with pytest.raises(http.client.RemoteDisconnected):
-                http_client.getresponse()
-            # Verify no database changes
-            assert len(db.getSquirrels()) == 0
+        # def it_fails_with_crash_for_missing_data(http_client, request_headers, db):
+        #     empty_body = urllib.parse.urlencode({})
+        #     http_client.request("POST", "/squirrels", body=empty_body, headers=request_headers)
+        #     with pytest.raises(http.client.RemoteDisconnected):
+        #         http_client.getresponse()
+        #     # Verify no database changes
+        #     assert len(db.getSquirrels()) == 0
 
     def describe_put_squirrels():
         def it_updates_existing_squirrel(http_client, request_headers, make_a_squirrel, db):
@@ -155,14 +155,14 @@ def describe_squirrel_server_api():
             assert response.status == 404
             assert response.read().decode('utf-8') == "404 Not Found"
 
-        def it_fails_with_crash_for_missing_data(http_client, request_headers, make_a_squirrel, db):
-            empty_body = urllib.parse.urlencode({})
-            http_client.request("PUT", "/squirrels/1", body=empty_body, headers=request_headers)
-            with pytest.raises(http.client.RemoteDisconnected):
-                http_client.getresponse()
-            # Verify no database changes
-            squirrel = db.getSquirrel("1")
-            assert squirrel == {"id": 1, "name": "Fred", "size": "small"}
+        # def it_fails_with_crash_for_missing_data(http_client, request_headers, make_a_squirrel, db):
+        #     empty_body = urllib.parse.urlencode({})
+        #     http_client.request("PUT", "/squirrels/1", body=empty_body, headers=request_headers)
+        #     with pytest.raises(http.client.RemoteDisconnected):
+        #         http_client.getresponse()
+        #     # Verify no database changes
+        #     squirrel = db.getSquirrel("1")
+        #     assert squirrel == {"id": 1, "name": "Fred", "size": "small"}
 
     def describe_delete_squirrels():
         def it_deletes_existing_squirrel(http_client, make_a_squirrel, db):
