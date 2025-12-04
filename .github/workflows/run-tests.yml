@@ -21,4 +21,4 @@ jobs:
         run: pip install pytest pytest-bdd
 
       - name: Run tests
-        run: pytest test_squirrel_server_system.py -v
+        run: pytest test_squirrel_server_system.py -vv
