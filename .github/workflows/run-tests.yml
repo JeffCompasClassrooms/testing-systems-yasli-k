@@ -18,7 +18,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install pytest pytest-bdd
+        run: pip install pytest pytest-describe
 
       - name: Run tests
         run: pytest test_squirrel_server_system.py -vv

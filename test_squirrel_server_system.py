@@ -8,7 +8,6 @@ import time
 import urllib.parse
 import sqlite3
 from squirrel_db import SquirrelDB
-from pytest_bdd import scenarios, given, when, then
 
 
 @pytest.fixture(autouse=True)
